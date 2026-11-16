@@ -81,6 +81,22 @@ def _create_namelists(case, confdir, namelist_infile, nmlgen, data_list_path):
         else:
             nmlgen.set_value("initfile", "")
 
+    # point output: the first time defaults to the run start, and a point list given by
+    # absolute path is copied to rundir, where WW3 reads it
+    if not nmlgen.get_value("date_percent_point_percent_start").strip("'\" "):
+        nmlgen.set_value("date_percent_point_percent_start", "{} {:02d}{:02d}{:02d}".format(
+            start_date, start_tod // 3600, start_tod % 3600 // 60, start_tod % 60))
+    point_file = nmlgen.get_value("type_percent_point_percent_file").strip("'\" ")
+    if os.path.isabs(point_file):
+        expect(os.path.isfile(point_file), "point list {} not found".format(point_file))
+        if os.path.isdir(rundir):
+            safe_copy(point_file, os.path.join(rundir, os.path.basename(point_file)))
+        point_file = os.path.basename(point_file)
+        nmlgen.set_value("type_percent_point_percent_file", point_file)
+    if int(nmlgen.get_value("date_percent_point_percent_stride").strip("'\" ")) > 0:
+        expect(not os.path.isdir(rundir) or os.path.isfile(os.path.join(rundir, point_file)),
+               "point output is on (date%point%stride > 0) but {} is not in {}".format(point_file, rundir))
+
     # error check
     dtcpl = basedt / int(ncpl)
     dtmax = int(float(nmlgen.get_value('dtmax')))
@@ -93,7 +109,7 @@ def _create_namelists(case, confdir, namelist_infile, nmlgen, data_list_path):
 
     namelist_file = os.path.join(confdir, "wav_in")
     nmlgen.write_output_file(namelist_file, data_list_path,
-                             groups=["input_nml","output_type_nml","ww3_inparm"],
+                             groups=["input_nml","output_type_nml","output_date_nml","ww3_inparm"],
                              sorted_groups=False)
 
     from pathlib import Path
