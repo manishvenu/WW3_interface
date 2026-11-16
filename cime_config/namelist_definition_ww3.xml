@@ -394,6 +394,60 @@
     <values>
       <value>points.list</value>
     </values>
+    <desc>
+      Point output locations, one "lon lat name" per line. WW3 reads the file from RUNDIR; if this
+      is an absolute path, buildnml copies the file to RUNDIR. Used when date%point%stride > 0.
+    </desc>
+  </entry>
+
+  <entry id="date_percent_point_percent_start">
+    <type>char</type>
+    <group>output_date_nml</group>
+    <category>setup</category>
+    <values>
+      <value></value>
+    </values>
+    <desc>
+      First point output time, "YYYYMMDD HHMMSS". Blank (default): the run start (RUN_STARTDATE,
+      START_TOD). WW3 steps an earlier start forward by date%point%stride to the run start.
+    </desc>
+  </entry>
+
+  <entry id="date_percent_point_percent_stride">
+    <type>char</type>
+    <group>output_date_nml</group>
+    <category>setup</category>
+    <values>
+      <value>0</value>
+    </values>
+    <desc>
+      Point output interval in seconds. 0 (default) turns point output off. Spectra and mean
+      parameters at the type%point%file locations go to out_pnt.ww3.nc (see date%point%outffile).
+    </desc>
+  </entry>
+
+  <entry id="date_percent_point_percent_stop">
+    <type>char</type>
+    <group>output_date_nml</group>
+    <category>setup</category>
+    <values>
+      <value>99991231 000000</value>
+    </values>
+    <desc>Last point output time, "YYYYMMDD HHMMSS".</desc>
+  </entry>
+
+  <entry id="date_percent_point_percent_outffile">
+    <type>char</type>
+    <group>output_date_nml</group>
+    <category>setup</category>
+    <values>
+      <value>0</value>
+    </values>
+    <desc>
+      0 (default): one file, out_pnt.ww3.nc, created anew by each run segment (so a resubmitted
+      run overwrites the previous segment's file). 1: one file per output time,
+      YYYYMMDD.HHMMSS.out_pnt.ww3.nc.
+    </desc>
   </entry>
 
   <entry id="history_option">
